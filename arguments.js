@@ -35,14 +35,10 @@ const breakfast = new Cat("Breakfast");
 
 Function.prototype.myBind = function (context) {
   let argsArr = Array.from(arguments);
-  // let ctx = context;
-  // console.log(argsArr);
   let func = this;
 
   return function () {
     let argsArr2 = Array.from(arguments);
-    console.log(argsArr);
-    console.log(argsArr2);
     func.apply(context, argsArr.slice(1).concat(argsArr2));
   };
 };
@@ -52,3 +48,58 @@ Function.prototype.myBindRest = function (context, ...args) {
     this.apply(context, args.concat(args2));
   };
 };
+
+function curriedSum(numArgs) {
+  let numbers = [];
+
+  function _curriedSum(number) {
+    numbers.push(number);
+    console.log(number);
+    if (numbers.length === numArgs){
+      return sumRest(...numbers);
+    } else {
+      return _curriedSum;
+    }
+  }
+
+  return _curriedSum;
+}
+
+Function.prototype.curryApply = function(numArgs) {
+  let args = [];
+  let func = this;
+
+  function _curry(arg) {
+    args.push(arg);
+    if (args.length === numArgs){
+      return func.apply(func, args);
+    } else {
+      return _curry;
+    }
+  }
+
+  return _curry;
+};
+
+Function.prototype.curry = function(numArgs) {
+  let args = [];
+
+  const _curry = (arg) => {
+    args.push(arg);
+    if (args.length === numArgs){
+      return this(...args);
+    } else {
+      return _curry;
+    }
+  };
+
+  return _curry;
+};
+
+function plusThree(num1, num2, num3) {
+  return num1 + num2 + num3;
+}
+
+function logNums(...nums) {
+  console.log(nums);
+}
